@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+</head>
+<body>
+    <h1>URL Shortener</h1>
+    
+    <form id="form" >
+        <input type="text" name="url" placeholder="Enter URL">
+        <input type="password" name="password" placeholder="Secret">
+        <button type="submit" onsubmit="">shorten</button> 
+    </form>
+    <form id="delete-form">
+        <input type="text" name="url" placeholder="Enter short URL ID">
+        <input type="password" name="password" placeholder="Secret">
+        <button type="submit" onsubmit="">delete</button>
+    </form> 
+
+    <script> 
+
+    //get the forms
+    const form = document.getElementById('form'); 
+    const deleteForm = document.getElementById('delete-form');
+    // get the form data from the upload form
+    form.onsubmit = function(e) { 
+        e.preventDefault();
+
+        // get the form data
+        const formData = new FormData(form);
+
+        // create an object with the form data
+        const data = {};
+        formData.forEach(function(value, key) {
+            data[key] = value;
+        });
+
+        console.log(data);
+
+        // send the data to the server
+        const response = fetch('/api/create', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'authorization': `${data.password}`,
+                'Content-Type': 'application/json'
+            }
+        // log the respomse json
+        }).then(response => response.json())
+        .then(data => alert(`your new short URL is: ${data.shortUrl}`));
+    }
+    deleteForm.onsubmit = function(e) {
+        e.preventDefault();
+
+        // get the form data
+        const formData = new FormData(deleteForm);
+
+        // create an object with the form data
+        const data = {};
+        formData.forEach(function(value, key) {
+            data[key] = value;
+        });
+
+        console.log(data);
+        console.log(`attempting to delete ${data.url}`);
+        // send the data to the server and wait for a response 
+        fetch(`/api/delete/`, {
+            method: 'DELETE',
+            body: JSON.stringify(data),
+            headers: {
+                'authorization': `${data.password}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function(response) {
+            if(response.status == 200) {
+                console.log(`deleted ${data.url}`);
+            }
+            if(response.status == 404) {
+                alert('404 not found');
+            }
+            if(response.status == 401) {
+                alert('wrong password');
+            }
+            if(response.status == 500) {
+                alert('server error');
+            }
+            if(response.status == 400) {
+                alert('bad request');
+            }
+        })
+    }
+
+    </script>
+
+</body>
+</html>
