@@ -5,7 +5,7 @@
 
     "server": {
         "port": 3000, 
-        "domain_name": "YOUR DOMAIN NAME. THIS WILL JUST MAKE IT SO THE RESPONSE URL IS http://YOURDOMAINNAME.com/URLS/SHORTENEDURL",
+        "domain_name": "EX https://mini51.com",
         
 
         "secret": "YOUR SECRET HERE THIS IS USED TO MAKE A SHORTEN ASWELL AS DELETE A URL"

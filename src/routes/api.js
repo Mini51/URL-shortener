@@ -12,6 +12,7 @@ const authenticate = (req, res, next) => {
         next();
     } else {
         res.status(401).json({ error: 'Unauthorized' });
+        console.log(`someone tried to access the API without authorization. the secret used was ${req.headers.authorization}`);
     }
 }
 
@@ -50,7 +51,7 @@ router.post('/create', authenticate, (req, res) => {
                     console.log(`created new URL: ${newURL.URL} with shortURL: ${newURL.shortURL}`);
                     res.json({ 
                         URL: newURL.URL, 
-                        shortURL: 'https://' + config.server.domain_name + '/' + newURL.shortURL
+                        shortURL: 'https://' + config.server.domain_name + '/' + 'URLS' + '/' + newURL.shortURL
                     })
                 }
             });
@@ -63,8 +64,9 @@ router.delete('/delete', authenticate, (req, res) => {
     if (!url) {
         return res.send('Please enter a URL');
     }
+    
 
-    URLS.findOneAndDelete({ URL: url }, (err, doc) => { 
+    URLS.findOneAndDelete({ shortURL: url }, (err, doc) => { 
         if (err) {
             console.log(err);
         } else if (doc) {
